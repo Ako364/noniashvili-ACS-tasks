@@ -3,7 +3,7 @@ firstNum = int(input("Enter your first number: "))
 secondNum = int(input("Enter your second number: "))
 thirdNum = int(input("Enter your third number: "))
 
-# Calculations to order, switches positions of nums
+#switches positions 
 if firstNum > secondNum:
     firstNum,secondNum = secondNum,firstNum
 # End if
@@ -15,4 +15,4 @@ if secondNum > thirdNum:
 # End if
 
 # Outputs in order
-print (firstNum, ", ", secondNum, ", ", thirdNum)
+print (firstNum, " ", secondNum, " ", thirdNum)
