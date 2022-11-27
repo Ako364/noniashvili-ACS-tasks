@@ -1,15 +1,26 @@
 import pygame
 # -- Global Constants
+
+circX = 10
+circY = 125
+
+y = 255
+
+step = 2
+stepY = 0.5
+
 # -- Colours
 BLACK = (0,0,0)
 WHITE = (255,255,0)
 BLUE = (50,50,255)
 YELLOW = (255,255,0)
+GREEN = (0, 20, 15)
+
 # -- Initialise PyGame
 pygame.init()
 
 # screen config
-SIZE = (500, 600)
+SIZE = (1000, 700)
 
 screen = pygame.display.set_mode(SIZE) #size
 pygame.display.set_caption("My Window") #title
@@ -17,14 +28,6 @@ pygame.display.set_caption("My Window") #title
 # Exit game flag set to false
 done = False
 clock = pygame.time.Clock()
-
-circX = 360
-circY = 230
-
-y = 255
-
-step = 2
-stepY = 2
 
 # game loop
 while not done:
@@ -34,26 +37,26 @@ while not done:
             done = True
         # endif
     # next event
+    
+    # Game logic
+    if circX >= 0 and circX <= 1000:
+        circX = circX + step
+    else:
+        circX = 0 + step
 
+    if circY > 0 and circY <= 125:
+        stepY = stepY
+    else:
+        stepY *= -1
+
+    circY = circY - stepY
+    
+    
     screen.fill(BLACK)  # screen is black
 
-    pygame.draw.rect(screen, BLUE, (100,100,300,300))
+    pygame.draw.rect(screen, GREEN, (400,250,200,200))
     pygame.draw.circle(screen, YELLOW, (circX,circY),20,0)
 
-    circX += step
-    if circX > 400:
-        step = -step 
-        
-    circY += stepY
-    if circY > 400: 
-        stepY = -stepY
-    
-    if circY > 250:
-        if y > 5:
-            y -= 5
-    elif circY < 250:
-        if y < 250:
-            y += 5
     
     # flip display to reveal new position of objects
     pygame.display.flip()
