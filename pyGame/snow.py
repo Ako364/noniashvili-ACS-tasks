@@ -60,7 +60,7 @@ all_sprites_group = pygame.sprite.Group()
 clock = pygame.time.Clock()
 
 ## -- Create the snowflakes
-number_of_flakes = 120 # we are creating 50 snowflakes
+number_of_flakes = 150 # we are creating 50 snowflakes
 for x in range (number_of_flakes):
     my_snow = Snow(WHITE, 5, 5, random.randrange(2,5)) # snowflakes are white with size 5 by 5 px
     snow_group.add (my_snow) # adds the new snowflake to the group of snowflakes

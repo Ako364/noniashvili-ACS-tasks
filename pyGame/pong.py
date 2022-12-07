@@ -10,7 +10,7 @@ x_val = 5
 y_val = 5
 
 # -- ball speed
-x_direction = 5
+x_direction = 10
 y_direction = 5
 
 # -- paddle size
