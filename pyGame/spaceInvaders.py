@@ -87,10 +87,10 @@ all_sprites_group = pygame.sprite.Group()
 clock = pygame.time.Clock()
 
 ## -- Create the invaderflakes
-number_of_flakes = 50 # we are creating 50 invaderflakes
+number_of_flakes = 50 # we are creating invaders
 for x in range (number_of_flakes):
-    my_invader = Invader(WHITE, 5, 5, random.randrange(2,5)) # invaderflakes are white with size 5 by 5 px
-    invader_group.add (my_invader) # adds the new invaderflake to the group of invaderflakes
+    my_invader = Invader(WHITE, 5, 5, random.randrange(2,5)) 
+    invader_group.add (my_invader) # adds the new invader to the group of invader
     all_sprites_group.add (my_invader) # adds it to the group of all Sprites 
     #Next x
 
@@ -104,15 +104,15 @@ while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
-        if event.key == pygame.K_LEFT:
-            player.player_set_speed(-3)  # speed set to -3
-        elif event.key == pygame.K_RIGHT:
-        # - if the right key pressed
-            player.player_set_speed(3) # speed set to 3
-        elif event.type == pygame.KEYUP:
-    # - a key released
-            if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-                player.player_set_speed(0)
+    if event.key == pygame.K_LEFT:
+        player.player_set_speed(-3)  # speed set to -3
+    elif event.key == pygame.K_RIGHT:
+    # - if the right key pressed
+        player.player_set_speed(3) # speed set to 3
+    elif event.type == pygame.KEYUP:
+# - a key released
+        if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+            player.player_set_speed(0)
     #Next event
 
     # -- Game logic goes after this comment
