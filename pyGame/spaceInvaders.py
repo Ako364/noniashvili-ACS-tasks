@@ -10,6 +10,8 @@ BLUE = (150,50,255)
 YELLOW = (255,255,0)
 GREEN = (0, 20, 15)
 
+a = True
+
 ## -- Define the class invader which is a sprite 
 class Invader(pygame.sprite.Sprite):
     # Define the cnostructor for invader
@@ -22,7 +24,7 @@ class Invader(pygame.sprite.Sprite):
         # Set the psoition of the sprite 
         self.rect = self.image.get_rect()
         self.rect.x = random.randrange(0, 1200)
-        self.rect.y = random.randrange(-50,0)
+        self.rect.y = random.randrange(-100,0)
         # Set speed of the sprite
         self.speed = speed
     # End Proceure
@@ -49,18 +51,18 @@ class Player(pygame.sprite.Sprite):
         # Set the psoition of the sprite 
         self.rect = self.image.get_rect()
         self.rect.x = random.randrange(0, 1200)
-        self.rect.y = 300
+        self.rect.y = 975
         # Set speed of the sprite
         self.speed = 0
     # End Proceure
 
     # Class update function - runs for each pass through the game loop
-    def update(self):
-        self.rect.y = self.rect.y + self.speed
-        if self.rect.y >= 1000:
+    def player_set_speed(self):
+        self.rect.x = self.rect.x + self.speed
+        # if self.rect.y >= 1000:
             # Spawn a invaderflake randomly on x-axis and on 0 on y-axis
-            self.rect.x = random.randrange(0, 1200)
-            self.rect.y = 0 + self.speed   
+            # self.rect.x = random.randrange(0, 1200)
+            # self.rect.y = 0 + self.speed   
 
 # End class
 
@@ -77,46 +79,54 @@ pygame.display.set_caption("Invader")
 # -- Exit game flag set to false
 done = False
 
-# -- Create a list of invader blocks
-invader_group = pygame.sprite.Group()
 
-# -- Create the list of all the sprites
+# Create a list of the Invader blocks
+Invader_group = pygame.sprite.Group()
+# Create a list of all sprites
 all_sprites_group = pygame.sprite.Group()
+
+
 
 # -- Manages how fast screen refreshes
 clock = pygame.time.Clock()
 
 ## -- Create the invaderflakes
-number_of_flakes = 50 # we are creating invaders
-for x in range (number_of_flakes):
-    my_invader = Invader(WHITE, 5, 5, random.randrange(2,5)) 
-    invader_group.add (my_invader) # adds the new invader to the group of invader
-    all_sprites_group.add (my_invader) # adds it to the group of all Sprites 
-    #Next x
+number_of_flakes = 10 
+for x in range(number_of_flakes):
+    my_Invader = Invader(WHITE, 20, 5, 5)
+    Invader_group.add(my_Invader)
+    all_sprites_group.add(my_Invader)
 
 ## -- create a player
-player = Player(YELLOW, 10, 10)
+player = Player(YELLOW, 30, 30)
 all_sprites_group.add(player)
 
-### -- Game Loop
+## -- game loop
 while not done:
-    # User input and controls, code to move up and down   
+    # User input and controls
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
-    if event.key == pygame.K_LEFT:
-        player.player_set_speed(-3)  # speed set to -3
-    elif event.key == pygame.K_RIGHT:
-    # - if the right key pressed
-        player.player_set_speed(3) # speed set to 3
-    elif event.type == pygame.KEYUP:
-# - a key released
-        if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-            player.player_set_speed(0)
-    #Next event
-
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                a = True
+            elif event.key == pygame.K_RIGHT:
+                a = True
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_LEFT]:
+        if player.rect.x < 0:
+            player.rect.x = 0
+        else:
+            player.rect.x = player.rect.x - 20
+    if keys[pygame.K_RIGHT]:
+        if player.rect.x >= 1200 - 25:
+            player.rect.x = 1200 - 25
+        else:
+            player.rect.x = player.rect.x + 20
+    
     # -- Game logic goes after this comment
     all_sprites_group.update()
+    player_hit_group = pygame.sprite.spritecollide(player, Invader_group, True)
 
     # -- Screen background is BLACK
     screen.fill(GREEN)
