@@ -54,6 +54,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = 975
         # Set speed of the sprite
         self.speed = 0
+        self.lives = 5 
     # End Proceure
 
     # Class update function - runs for each pass through the game loop
@@ -66,8 +67,30 @@ class Player(pygame.sprite.Sprite):
 
 # End class
 
+
+class Bullet(pygame.sprite.Sprite):
+    # Define the constructor for Invader
+    def __init__(self, color, width, height):
+        # Call the sprite constructor
+        super().__init__()
+        # Create a sprite and fill it with colour
+        self.image = pygame.Surface([width, height])
+        self.image.fill(color)
+        # Set the position of the sprite
+        self.rect = self.image.get_rect()
+        self.rect.x = player.get_x() + 10
+        self.rect.y = 700
+    def update(self):
+        # Move bullet up 
+        self.rect.y = self.rect.y - 3
+        pygame.sprite.groupcollide(bullet_list, Invader_group, True, True)
+        
+
 ## -- Initialise PyGame
 pygame.init()
+
+# --- set font for the scoreboard
+font = pygame.font.Font('freesansbold.ttf', 32)
 
 # -- Blank Screen
 size = (1200, 1000)
@@ -86,11 +109,10 @@ Invader_group = pygame.sprite.Group()
 all_sprites_group = pygame.sprite.Group()
 
 
-
 # -- Manages how fast screen refreshes
 clock = pygame.time.Clock()
 
-## -- Create the invaderflakes
+## -- Create the invaders
 number_of_flakes = 10 
 for x in range(number_of_flakes):
     my_Invader = Invader(WHITE, 20, 5, 5)
@@ -100,6 +122,15 @@ for x in range(number_of_flakes):
 ## -- create a player
 player = Player(YELLOW, 30, 30)
 all_sprites_group.add(player)
+
+# Create a list of all bullets
+# bullet_list = pygame.sprite.Group()
+
+# Procedure to fire bullet
+def fire():
+    mybullet = Bullet(WHITE, 3, 7)
+    all_sprites_group.add(mybullet)
+    
 
 ## -- game loop
 while not done:
@@ -112,6 +143,8 @@ while not done:
                 a = True
             elif event.key == pygame.K_RIGHT:
                 a = True
+            elif event.key == pygame.K_UP:
+                fire()
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT]:
         if player.rect.x < 0:
@@ -128,11 +161,19 @@ while not done:
     all_sprites_group.update()
     player_hit_group = pygame.sprite.spritecollide(player, Invader_group, True)
 
+    for foo in player_hit_group:
+        player.lives = player.lives - 1
+
+
     # -- Screen background is BLACK
     screen.fill(GREEN)
 
     # -- Draw here
     all_sprites_group.draw(screen)
+
+    # -- lives 
+    lives = font.render("LIVES : " + str(player.lives), True, (255, 255, 255))
+    screen.blit(lives, (400, 50))
 
     # -- flip display to reveal new position of objects
     pygame.display.flip()
