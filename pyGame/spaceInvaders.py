@@ -9,6 +9,7 @@ WHITE = (255,255,255)
 BLUE = (150,50,255)
 YELLOW = (255,255,0)
 GREEN = (0, 20, 15)
+RED = (100, 0 ,0)
 
 a = True
 
@@ -55,7 +56,11 @@ class Player(pygame.sprite.Sprite):
         # Set speed of the sprite
         self.speed = 0
         self.lives = 5 
+        self.bullet_count = 50
     # End Proceure
+
+    def get_x(self):
+        return self.rect.x
 
     # Class update function - runs for each pass through the game loop
     def player_set_speed(self):
@@ -78,12 +83,11 @@ class Bullet(pygame.sprite.Sprite):
         self.image.fill(color)
         # Set the position of the sprite
         self.rect = self.image.get_rect()
-        self.rect.x = player.get_x() + 10
-        self.rect.y = 700
+        self.rect.x = player.get_x()
+        self.rect.y = 975 - 20
     def update(self):
         # Move bullet up 
-        self.rect.y = self.rect.y - 3
-        pygame.sprite.groupcollide(bullet_list, Invader_group, True, True)
+        self.rect.y = self.rect.y - 5
         
 
 ## -- Initialise PyGame
@@ -124,13 +128,13 @@ player = Player(YELLOW, 30, 30)
 all_sprites_group.add(player)
 
 # Create a list of all bullets
-# bullet_list = pygame.sprite.Group()
+bullet_list = pygame.sprite.Group()
 
-# Procedure to fire bullet
 def fire():
-    mybullet = Bullet(WHITE, 3, 7)
+    mybullet = Bullet(RED,7, 7)
     all_sprites_group.add(mybullet)
-    
+    bullet_list.add(mybullet)
+    player.bullet_count = player.bullet_count - 1
 
 ## -- game loop
 while not done:
@@ -144,6 +148,7 @@ while not done:
             elif event.key == pygame.K_RIGHT:
                 a = True
             elif event.key == pygame.K_UP:
+                # -- fire a bullet
                 fire()
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT]:
@@ -159,11 +164,16 @@ while not done:
     
     # -- Game logic goes after this comment
     all_sprites_group.update()
+
+    # -- player hitting the invader
     player_hit_group = pygame.sprite.spritecollide(player, Invader_group, True)
 
+    # -- bullet hitting the invader
+    bullet_group = pygame.sprite.spritecollide(mybullet, Invader_group, True)
+
+    # -- lives scorebord working 
     for foo in player_hit_group:
         player.lives = player.lives - 1
-
 
     # -- Screen background is BLACK
     screen.fill(GREEN)
