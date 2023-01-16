@@ -83,11 +83,13 @@ class Bullet(pygame.sprite.Sprite):
         self.image.fill(color)
         # Set the position of the sprite
         self.rect = self.image.get_rect()
-        self.rect.x = player.get_x()
+        self.rect.x = player.get_x() + 10
         self.rect.y = 975 - 20
     def update(self):
         # Move bullet up 
         self.rect.y = self.rect.y - 5
+        # -- bullet hitting the invader
+        pygame.sprite.groupcollide(bullet_list, Invader_group, True, True)
         
 
 ## -- Initialise PyGame
@@ -167,9 +169,6 @@ while not done:
 
     # -- player hitting the invader
     player_hit_group = pygame.sprite.spritecollide(player, Invader_group, True)
-
-    # -- bullet hitting the invader
-    bullet_group = pygame.sprite.spritecollide(mybullet, Invader_group, True)
 
     # -- lives scorebord working 
     for foo in player_hit_group:
