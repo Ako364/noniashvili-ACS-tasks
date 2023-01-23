@@ -25,7 +25,7 @@ class Invader(pygame.sprite.Sprite):
         # Set the psoition of the sprite 
         self.rect = self.image.get_rect()
         self.rect.x = random.randrange(0, 1200)
-        self.rect.y = random.randrange(-100,0)
+        self.rect.y = random.randrange(-300,0)
         # Set speed of the sprite
         self.speed = speed
     # End Proceure
@@ -57,10 +57,15 @@ class Player(pygame.sprite.Sprite):
         self.speed = 0
         self.lives = 5 
         self.bullet_count = 50
+        self.score_count = 0
     # End Proceure
 
     def get_x(self):
         return self.rect.x
+
+    # Score
+    def hitTarget(self):
+        self.score_count = self.score_count + 1
 
     # Class update function - runs for each pass through the game loop
     def player_set_speed(self):
@@ -89,7 +94,8 @@ class Bullet(pygame.sprite.Sprite):
         # Move bullet up 
         self.rect.y = self.rect.y - 5
         # -- bullet hitting the invader
-        pygame.sprite.groupcollide(bullet_list, Invader_group, True, True)
+        if pygame.sprite.groupcollide(bullet_list, Invader_group, True, True, collided = None):
+            player.hitTarget()
         
 
 ## -- Initialise PyGame
@@ -119,8 +125,8 @@ all_sprites_group = pygame.sprite.Group()
 clock = pygame.time.Clock()
 
 ## -- Create the invaders
-number_of_flakes = 10 
-for x in range(number_of_flakes):
+num_of_invaders = 20
+for x in range(num_of_invaders):
     my_Invader = Invader(WHITE, 20, 5, 5)
     Invader_group.add(my_Invader)
     all_sprites_group.add(my_Invader)
@@ -133,65 +139,77 @@ all_sprites_group.add(player)
 bullet_list = pygame.sprite.Group()
 
 def fire():
+    ## -- check if u still have bullets
     if player.bullet_count == 0:
         print("OUT OF BULLETS!!!")
     else:
-        mybullet = Bullet(RED,7, 7)
+        mybullet = Bullet(RED,7, 14)
         all_sprites_group.add(mybullet)
         bullet_list.add(mybullet)
         player.bullet_count = player.bullet_count - 1
 
 ## -- game loop
 while not done:
-    # User input and controls
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            done = True
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                a = True
-            elif event.key == pygame.K_RIGHT:
-                a = True
-            elif event.key == pygame.K_UP:
-                # -- fire a bullet
-                fire()
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT]:
-        if player.rect.x < 0:
-            player.rect.x = 0
-        else:
-            player.rect.x = player.rect.x - 20
-    if keys[pygame.K_RIGHT]:
-        if player.rect.x >= 1200 - 25:
-            player.rect.x = 1200 - 25
-        else:
-            player.rect.x = player.rect.x + 20
-    
-    # -- Game logic goes after this comment
-    all_sprites_group.update()
+    if player.lives == 0:
+        pygame.quit()
+    else:
+        # User input and controls
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                done = True
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    a = True
+                elif event.key == pygame.K_RIGHT:
+                    a = True
+                elif event.key == pygame.K_UP:
+                    # -- fire a bullet
+                    fire()
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT]:
+            if player.rect.x < 0:
+                player.rect.x = 0
+            else:
+                player.rect.x = player.rect.x - 20
+        if keys[pygame.K_RIGHT]:
+            if player.rect.x >= 1200 - 25:
+                player.rect.x = 1200 - 25
+            else:
+                player.rect.x = player.rect.x + 20
+        
+        # -- Game logic goes after this comment
+        all_sprites_group.update()
 
-    # -- player hitting the invader
-    player_hit_group = pygame.sprite.spritecollide(player, Invader_group, True)
+        # -- player hitting the invader
+        player_hit_group = pygame.sprite.spritecollide(player, Invader_group, True)
 
-    # -- lives scorebord working 
-    for foo in player_hit_group:
-        player.lives = player.lives - 1
+        # -- lives scorebord working 
+        for foo in player_hit_group:
+            player.lives = player.lives - 1
 
-    # -- Screen background is BLACK
-    screen.fill(GREEN)
+        # -- Screen background is BLACK
+        screen.fill(GREEN)
 
-    # -- Draw here
-    all_sprites_group.draw(screen)
+        # -- Draw here
+        all_sprites_group.draw(screen)
 
-    # -- lives 
-    lives = font.render("LIVES : " + str(player.lives), True, (255, 255, 255))
-    screen.blit(lives, (400, 50))
+        # -- lives 
+        lives = font.render("LIVES : " + str(player.lives), True, (255, 255, 255))
+        screen.blit(lives, (50, 50))
 
-    # -- flip display to reveal new position of objects
-    pygame.display.flip()
-    
-    # - The clock ticks over
-    clock.tick(40)
+        # -- bullets
+        bullets = font.render("BULLETS LEFT : " + str(player.bullet_count), True, (255, 255, 255))
+        screen.blit(bullets, (50, 100))
+
+        # -- score
+        score_board = font.render("SCORE: " + str(player.score_count), True, (255, 255, 255))
+        screen.blit(score_board, (50, 150))
+
+        # -- flip display to reveal new position of objects
+        pygame.display.flip()
+        
+        # - The clock ticks over
+        clock.tick(40)
     
 #End While - End of game loop
 pygame.quit()
