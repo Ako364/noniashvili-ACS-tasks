@@ -133,10 +133,13 @@ all_sprites_group.add(player)
 bullet_list = pygame.sprite.Group()
 
 def fire():
-    mybullet = Bullet(RED,7, 7)
-    all_sprites_group.add(mybullet)
-    bullet_list.add(mybullet)
-    player.bullet_count = player.bullet_count - 1
+    if player.bullet_count == 0:
+        print("OUT OF BULLETS!!!")
+    else:
+        mybullet = Bullet(RED,7, 7)
+        all_sprites_group.add(mybullet)
+        bullet_list.add(mybullet)
+        player.bullet_count = player.bullet_count - 1
 
 ## -- game loop
 while not done:
