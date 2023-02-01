@@ -52,7 +52,7 @@ class Player(pygame.sprite.Sprite):
         # Set the psoition of the sprite 
         self.rect = self.image.get_rect()
         self.rect.x = random.randrange(0, 1200)
-        self.rect.y = 975
+        self.rect.y = 775
         # Set speed of the sprite
         self.speed = 0
         self.lives = 5 
@@ -89,7 +89,7 @@ class Bullet(pygame.sprite.Sprite):
         # Set the position of the sprite
         self.rect = self.image.get_rect()
         self.rect.x = player.get_x() + 10
-        self.rect.y = 975 - 20
+        self.rect.y = 775 - 20
     def update(self):
         # Move bullet up 
         self.rect.y = self.rect.y - 5
@@ -105,7 +105,7 @@ pygame.init()
 font = pygame.font.Font('freesansbold.ttf', 32)
 
 # -- Blank Screen
-size = (1200, 1000)
+size = (1000, 800)
 screen = pygame.display.set_mode(size)
 
 # -- Title of new window/screen
